@@ -8,8 +8,32 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "index.js"
+    },
+    {
+      "src": "/",
+      "dest": "/public/chk.html"
+    },
+    {
+      "src": "/chk",
+      "dest": "/public/chk.html"
+    },
+    {
+      "src": "/gen",
+      "dest": "/public/gen.html"
+    },
+    {
+      "src": "/styles.css",
+      "dest": "/public/styles.css"
+    },
+    {
+      "src": "/script.js",
+      "dest": "/public/script.js"
+    },
+    {
+      "src": "/(.+)",
+      "dest": "/public/$1"
     }
   ]
 }
