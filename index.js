@@ -12,7 +12,7 @@ app.use('/api/luhn', require('./api/luhn.js'));
 
 // Serve static files
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'chk.html'));
 });
 
 app.get('/gen', (req, res) => {
