@@ -24,12 +24,12 @@
       "dest": "/public/gen.html"
     },
     {
-      "src": "/styles.css",
-      "dest": "/public/styles.css"
+      "src": "/styles.min.css",
+      "dest": "/public/styles.min.css"
     },
     {
-      "src": "/script.js",
-      "dest": "/public/script.js"
+      "src": "/script.min.js",
+      "dest": "/public/script.min.js"
     },
     {
       "src": "/(.+)",
