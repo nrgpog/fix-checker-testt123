@@ -24,11 +24,11 @@ app.get('/gen', (req, res) => {
 });
 
 // Manejo de archivos estáticos
-app.get('/styles.css', (req, res) => {
+app.get('/styles.min.css', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'styles.min.css'));
 });
 
-app.get('/script.js', (req, res) => {
+app.get('/script.min.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'script.min.js'));
 });
 
