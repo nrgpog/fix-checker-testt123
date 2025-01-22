@@ -25,11 +25,11 @@ app.get('/gen', (req, res) => {
 
 // Manejo de archivos estáticos
 app.get('/styles.css', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'styles.css'));
+    res.sendFile(path.join(__dirname, 'public', 'styles.min.css'));
 });
 
 app.get('/script.js', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'script.js'));
+    res.sendFile(path.join(__dirname, 'public', 'script.min.js'));
 });
 
 // Manejo de 404
