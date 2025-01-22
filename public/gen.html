@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Aeolous Generator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --primary-light: #818CF8;
+            --success: #10B981;
+            --danger: #EF4444;
+            --dark: #111827;
+            --darker: #0B0F1A;
+            --gray: #374151;
+            --light-gray: #4B5563;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--white);
+            min-height: 100vh;
+        }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.5));
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            background: var(--gray);
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-2px);
+            background: var(--primary);
+        }
+
+        .generator-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light-gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--darker);
+            border: 1px solid var(--gray);
+            border-radius: 0.5rem;
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--white);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .results {
+            background: var(--darker);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .card-item {
+            padding: 0.75rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--light-gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 1rem 2rem;
+            background: var(--success);
+            color: var(--white);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Agregar en la sección de estilos */
+.btn i {
+    font-size: 1.1rem;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-dark);
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .controls {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+    <body>
+        <canvas id="bgCanvas"></canvas>
+        <div class="container">
+            <header class="header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    <h1>Aeolous Generator</h1>
+                </div>
+                <a href="/" class="header-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al Checker
+                </a>
+            </header>
+
+            <div class="generator-panel">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>BIN/Base</label>
+                        <input type="text" id="bin" placeholder="45125x" maxlength="16">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mes</label>
+                        <select id="month">
+                            <option value="rnd">Random</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Año</label>
+                        <select id="year">
+                            <option value="rnd">Random</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Cantidad</label>
+                        <input type="number" id="quantity" value="10" min="1" max="100">
+                    </div>
+                </div>
+
+                <!-- Modifica la sección de controls en gen.html -->
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="generateCards()">
+                        <i class="fas fa-cog"></i>
+                        Generar
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyAllFormatted()">
+                        <i class="fas fa-credit-card"></i>
+                        Copiar CC's
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyAll()">
+                        <i class="fas fa-copy"></i>
+                        Copiar Simple
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearResults()">
+                        <i class="fas fa-trash"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <div class="results" id="results"></div>
+            </div>
+        </div>
+
+        <script>
+            // Background Animation
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function initCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', initCanvas);
+            initCanvas();
+
+            const particles = Array.from({length: 50}, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 1,
+                speedX: Math.random() * 2 - 1,
+                speedY: Math.random() * 2 - 1,
+                color: `rgba(79, 70, 229, ${Math.random() * 0.3})`
+            }));
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.fillStyle = 'rgba(11, 15, 26, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+
+                    if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                    if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+            }
+
+            animate();
+
+            // Generator Functions
+            function generateLuhn(partial) {
+                let sum = 0;
+                let isEven = false;
+
+                for (let i = partial.length - 1; i >= 0; i--) {
+                    let digit = parseInt(partial[i]);
+
+                    if (isEven) {
+                        digit *= 2;
+                        if (digit > 9) digit -= 9;
+                    }
+
+                    sum += digit;
+                    isEven = !isEven;
+                }
+
+                return (10 - (sum % 10)) % 10;
+            }
+
+            function generateCard(base) {
+                let card = base;
+                // Reemplazar X o espacios vacíos con números aleatorios
+                while (card.length < 16) {
+                    card += Math.floor(Math.random() * 10);
+                }
+                card = card.replace(/x/gi, () => Math.floor(Math.random() * 10));
+
+                // Asegurar que tenga 16 dígitos y sea válida según Luhn
+                const partial = card.slice(0, -1);
+                const checkDigit = generateLuhn(partial);
+                return partial + checkDigit;
+            }
+
+            function getRandomMonth() {
+                return String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            }
+
+            function getRandomYear() {
+                return String(2024 + Math.floor(Math.random() * 6));
+            }
+
+            function getRandomCVV() {
+                return String(Math.floor(Math.random() * 900) + 100);
+            }
+
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            function generateCards() {
+                const base = document.getElementById('bin').value;
+                const month = document.getElementById('month').value;
+                const year = document.getElementById('year').value;
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const results = document.getElementById('results');
+
+                if (!base) {
+                    alert('Ingresa un BIN o base');
+                    return;
+                }
+
+                results.innerHTML = '';
+
+                for (let i = 0; i < quantity; i++) {
+                    const cardNumber = generateCard(base);
+                    const mm = month === 'rnd' ? getRandomMonth() : month;
+                    const yy = year === 'rnd' ? getRandomYear() : year;
+                    const cvv = getRandomCVV();
+
+                    const card = `${cardNumber}|${mm}|${yy}|${cvv}`;
+
+                    const div = document.createElement('div');
+                    div.className = 'card-item';
+                    div.innerHTML = `
+                        <span>${card}</span>
+                        <button class="copy-btn" onclick="copyCard('${card}')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    `;
+                    results.appendChild(div);
+                }
+            }
+
+            function copyCard(card) {
+                navigator.clipboard.writeText(card).then(() => {
+                    showNotification('Tarjeta copiada!');
+                });
+            }
+
+            // Agregar esta función en la sección de script
+function copyAllFormatted() {
+    const cards = Array.from(document.querySelectorAll('.card-item span'))
+        .map(span => span.textContent);
+    
+    if (!cards.length) {
+        alert('No hay tarjetas para copiar');
+        return;
+    }
+    
+    const formattedText = cards.map(card => {
+        const [cc, month, year, cvv] = card.split('|');
+        return `${cc}|${month}|${year}|${cvv} | Generated by Aeolous | .gg/aeolous`;
+    }).join('\n');
+    
+    navigator.clipboard.writeText(formattedText).then(() => {
+        showNotification('CC\'s copiadas con formato!');
+    });
+}
+
+// Modifica la función copyAll existente para diferenciarla
+function copyAll() {
+    const cards = Array.from(document.querySelectorAll('.card-item span'))
+        .map(span => span.textContent)
+        .join('\n');
+    
+    if (!cards) {
+        alert('No hay tarjetas para copiar');
+        return;
+    }
+    
+    navigator.clipboard.writeText(cards).then(() => {
+        showNotification('Texto simple copiado!');
+    });
+}
+
+            function copyAll() {
+                const cards = Array.from(document.querySelectorAll('.card-item span'))
+                    .map(span => span.textContent)
+                    .join('\n');
+
+                if (!cards) {
+                    alert('No hay tarjetas para copiar');
+                    return;
+                }
+
+                navigator.clipboard.writeText(cards).then(() => {
+                    showNotification('Todas las tarjetas copiadas!');
+                });
+            }
+
+            function clearResults() {
+                document.getElementById('results').innerHTML = '';
+            }
+        </script>
+    </body>
+    </html>

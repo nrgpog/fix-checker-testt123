@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aeolous Checker v5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.min.css">
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>AEOLOUS CHECKER <span class="version">v5</span></h1>
+            </div>
+            <div class="header-buttons">
+                <a href="/gen.html" class="header-btn generator">
+                    <i class="fas fa-credit-card"></i>
+                    GENERATOR
+                </a>
+                <a href="#" class="header-btn discord">
+                    <i class="fab fa-discord"></i>
+                    DISCORD
+                </a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="checkedCount">0</span>
+                <span class="stat-label">CHECKED</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="livesCount">0</span>
+                <span class="stat-label">LIVES</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="deadsCount">0</span>
+                <span class="stat-label">DEADS</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="successRate">0%</span>
+                <span class="stat-label">SUCCESS RATE</span>
+            </div>
+        </div>
+
+        <!-- Main Checker -->
+        <div class="checker-container">
+            <div class="input-section">
+                <div class="input-header">
+                    <span>Cards to Check (Format: CC|MM|YY|CVV)</span>
+                </div>
+                <textarea id="cards" class="cards-input" placeholder="4000000000000000|01|25|000&#10;4111111111111111|02|26|111"></textarea>
+
+                <div class="gateway-selector">
+                    <span>Gateway</span>
+                    <select id="gateway" class="gateway-select">
+                        <option value="basic">Basic Gateway</option>
+                        <option value="pro">Pro Gateway</option>
+                        <option value="luhn">Luhn Gateway</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="checkBtn" class="action-btn check">
+                        <i class="fas fa-shield-alt"></i>
+                        CHECK CARDS
+                    </button>
+                    <button id="clearBtn" class="action-btn clear">
+                        <i class="fas fa-trash"></i>
+                        CLEAR
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-container">
+                    <div class="results-column lives">
+                        <div class="column-header">
+                            <i class="fas fa-check-circle"></i>
+                            LIVES
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="cards-list" id="livesList"></div>
+                    </div>
+                    <div class="results-column deads">
+                        <div class="column-header">
+                            <i class="fas fa-times-circle"></i>
+                            DEADS
+                            <span class="counter">0</span>
+                        </div>
+                        <div class="cards-list" id="deadsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loader">
+            <div class="loader-spinner"></div>
+            <span>Checking Cards...</span>
+        </div>
+    </div>
+
+    <script src="script.min.js"></script>
+</body>
+</html>

@@ -1,15 +1,19 @@
 {
-  "name": "nodejs",
+  "name": "aeolus-checker",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "minify:css": "npx clean-css-cli ./public/styles.css -o ./public/styles.min.css",
+    "obfuscate:js": "npx javascript-obfuscator ./public/script.js -o ./public/script.min.js --string-array true --string-array-encoding base64 --compact true",
+    "build": "npm run minify:css && npm run obfuscate:js",
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/node": "^18.0.6"
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.0",
+    "clean-css-cli": "^5.6.2"
   }
 }
