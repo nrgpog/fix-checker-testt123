@@ -12,12 +12,5 @@
       "source": "/(.*)",
       "destination": "/chk.html"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/basic/check",
-      "methods": ["POST"],
-      "dest": "/api/basic/check"
-    }
   ]
 }
