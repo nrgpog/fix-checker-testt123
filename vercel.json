@@ -1,39 +1,16 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "/",
-      "dest": "/public/chk.html"
+      "source": "/gen",
+      "destination": "/gen.html"
     },
     {
-      "src": "/chk",
-      "dest": "/public/chk.html"
-    },
-    {
-      "src": "/gen",
-      "dest": "/public/gen.html"
-    },
-    {
-      "src": "/styles.min.css",
-      "dest": "/public/styles.min.css"
-    },
-    {
-      "src": "/script.min.js",
-      "dest": "/public/script.min.js"
-    },
-    {
-      "src": "/(.+)",
-      "dest": "/public/$1"
+      "source": "/",
+      "destination": "/chk.html"
     }
   ]
 }
