@@ -1,6 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/api/basic/check",
+      "destination": "/api/basic/check",
+      "has": [
+        {
+          "type": "method",
+          "value": "POST"
+        }
+      ]
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
