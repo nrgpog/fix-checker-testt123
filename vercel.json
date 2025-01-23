@@ -17,6 +17,16 @@
       "dest": "index.js"
     },
     {
+      "src": "/api/pro/check",
+      "methods": ["POST"],
+      "dest": "index.js"
+    },
+    {
+      "src": "/api/luhn/check",
+      "methods": ["POST"],
+      "dest": "index.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
