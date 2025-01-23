@@ -1,16 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/basic/check",
-      "destination": "/api/basic/check",
-      "has": [
-        {
-          "type": "method",
-          "value": "POST"
-        }
-      ]
-    },
-    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
@@ -22,5 +12,10 @@
       "source": "/(.*)",
       "destination": "/chk.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
