@@ -20,6 +20,10 @@
       "dest": "/public/gen.html"
     },
     {
+      "src": "/(styles\\.min\\.css|script\\.min\\.js)",
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/chk.html"
     }
