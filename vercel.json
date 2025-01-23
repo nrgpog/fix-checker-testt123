@@ -1,23 +1,27 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
-      "source": "/gen",
-      "destination": "/gen.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/chk.html"
-    }
-  ],
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
+      "src": "index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/gen",
+      "dest": "/public/gen.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/chk.html"
     }
   ]
 }
