@@ -291,7 +291,47 @@
             .controls {
                 grid-template-columns: 1fr;
             }
+
+            /* Mejoras para tablets */
+            .btn {
+                min-height: 44px; /* Altura mínima para mejor área táctil */
+                padding: 12px 20px; /* Padding aumentado para mejor área táctil */
+                touch-action: manipulation; /* Optimización para eventos touch */
+                -webkit-tap-highlight-color: transparent; /* Eliminar highlight en tap */
+            }
+
+            .input-group select,
+            .input-group input {
+                min-height: 44px; /* Altura mínima para mejor área táctil */
+                font-size: 16px; /* Evitar zoom en iOS */
+            }
+
+            /* Prevenir selección de texto no deseada en taps */
+            .btn, 
+            .input-group label,
+            .input-group select,
+            .input-group input {
+                user-select: none;
+                -webkit-user-select: none;
+            }
         }
+
+        /* Estilos específicos para tablets */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
         /* Agregar en la sección de estilos */
 .btn i {
     font-size: 1.1rem;
@@ -431,19 +471,19 @@
 
                 <!-- Modifica la sección de controls en gen.html -->
                 <div class="controls">
-                    <button class="btn btn-primary" onclick="generateCards()">
+                    <button class="btn btn-primary" onclick="generateCards()" ontouchstart="generateCards()">
                         <i class="fas fa-cog"></i>
                         Generar
                     </button>
-                    <button class="btn btn-secondary" onclick="copyAllFormatted()">
+                    <button class="btn btn-secondary" onclick="copyAllFormatted()" ontouchstart="copyAllFormatted()">
                         <i class="fas fa-credit-card"></i>
                         Copiar CC's
                     </button>
-                    <button class="btn btn-secondary" onclick="copyAll()">
+                    <button class="btn btn-secondary" onclick="copyAll()" ontouchstart="copyAll()">
                         <i class="fas fa-copy"></i>
                         Copiar Simple
                     </button>
-                    <button class="btn btn-secondary" onclick="clearResults()">
+                    <button class="btn btn-secondary" onclick="clearResults()" ontouchstart="clearResults()">
                         <i class="fas fa-trash"></i>
                         Limpiar
                     </button>
@@ -474,7 +514,7 @@
                         <input type="number" id="addressCount" min="1" max="10" value="1" class="form-control">
                     </div>
                     <div class="input-group" style="display: flex; align-items: flex-end;">
-                        <button onclick="generateAddresses()" class="btn btn-primary" style="width: 100%;">
+                        <button onclick="generateAddresses()" ontouchstart="generateAddresses()" class="btn btn-primary" style="width: 100%;">
                             <i class="fas fa-map-marker-alt"></i>
                             Generar Direcciones
                         </button>
