@@ -63,7 +63,6 @@ html, body {
     font-family: 'Inter', system-ui, sans-serif;
     line-height: 1.5;
     overflow-x: hidden;
-    max-width: 100%;
 }
 
 /* Parte 3: Canvas y contenedor principal */
@@ -88,7 +87,6 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    overflow-x: hidden;
 }
 
 /* Parte 4: Header */
@@ -508,106 +506,13 @@ html, body {
 
 @media (max-width: 480px) {
     .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-3);
+        grid-template-columns: 1fr;
     }
+
     .results-container {
-        flex-direction: column;
-    }
-    .checker-container {
         grid-template-columns: 1fr;
-        gap: var(--space-4);
-    }
-    .container {
-        padding: var(--space-2);
-    }
-    .main-header {
-        padding: var(--space-3);
-        flex-direction: column;
-        gap: var(--space-3);
-    }
-    .panel-header {
-        padding-bottom: var(--space-3);
-    }
-    .cards-list {
-        height: auto;
-        max-height: 60vh;
     }
 }
-
-@media (max-width: 400px) {
-    .container {
-        padding: var(--space-2);
-        min-width: 320px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-2);
-    }
-    
-    .stat-card {
-        padding: var(--space-3);
-        min-width: 0;
-    }
-    
-    .stat-number {
-        font-size: 1.5rem;
-    }
-    
-    .input-section, .results-section {
-        padding: var(--space-3);
-        min-width: 0;
-    }
-    
-    .cards-input {
-        height: 150px;
-        min-width: 0;
-    }
-    
-    .action-buttons {
-        grid-template-columns: 1fr;
-    }
-    
-    .logo h1 {
-        font-size: 1.25rem;
-    }
-    
-    .version {
-        font-size: 0.75rem;
-    }
-    
-    .panel-header h2 {
-        font-size: 1rem;
-    }
-    
-    .card-item {
-        padding: var(--space-2);
-        min-width: 0;
-    }
-    
-    .card-details {
-        font-size: 0.875rem;
-        flex-direction: column;
-        gap: var(--space-2);
-    }
-    
-    .header-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .header-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .notifications {
-        max-width: 90%;
-        right: 5%;
-    }
-}
-
 /* Header Buttons and Version */
 .header-buttons {
     display: flex;
@@ -1230,4 +1135,21 @@ html, body {
 /* Estilo para el texto copiado */
 .copy-notification {
     background: #5865F2;
+}
+
+/* Agregar estilos para los nuevos elementos */
+.input-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--gray-600);
+    border-radius: 0.5rem;
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
