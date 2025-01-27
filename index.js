@@ -348,12 +348,136 @@ app.post('/api/luhn/check', async (req, res) => {
     }
 });
 
+// Funciones de extrapolación
+function extrapolacionBasica(cc) {
+    return `${cc.slice(0, 10)}xxxxxx`;
+}
+
+function extrapolacionSimilitud(cc1, cc2) {
+    const cc1_group_1 = cc1.slice(0, 10);
+    const cc1_group_2 = cc1.slice(10);
+    const cc2_group_2 = cc2.slice(10);
+    
+    let result_group_2 = '';
+    for (let i = 0; i < 6; i++) {
+        result_group_2 += cc1_group_2[i] !== cc2_group_2[i] ? 'x' : cc1_group_2[i];
+    }
+    
+    return `${cc1_group_1}${result_group_2}`;
+}
+
+function extrapolacionLogica(cc) {
+    const group1 = cc.slice(0, 6);
+    const group2 = cc.slice(6);
+    
+    if (group2.length < 9) {
+        throw new Error("La tarjeta no tiene la longitud suficiente");
+    }
+
+    const subgroup1 = group2.slice(0, 3);
+    const subgroup2 = group2.slice(3, 7);
+    const subgroup3 = group2.slice(7);
+
+    const subgroup1_replaced = subgroup1.length === 3 ? `${subgroup1[0]}x${subgroup1[2]}` : subgroup1;
+    const subgroup2_replaced = subgroup2.length === 4 ? `${subgroup2[0]}xx${subgroup2[3]}` : subgroup2;
+    const subgroup3_replaced = subgroup3.length >= 3 ? `${subgroup3[0]}x${subgroup3[2]}` : subgroup3;
+
+    return `${group1}${subgroup1_replaced}${subgroup2_replaced}${subgroup3_replaced}`;
+}
+
+function extrapolacionSofia(cc1, cc2) {
+    if (cc1.length < 16 || cc2.length < 16) {
+        throw new Error("Las tarjetas deben tener al menos 16 dígitos");
+    }
+    
+    const cc1_grupo1 = cc1.slice(0, 8);
+    const cc1_grupo2 = cc1.slice(8);
+    const cc2_grupo1 = cc2.slice(0, 8);
+    const cc2_grupo2 = cc2.slice(8);
+    
+    let resultado = '';
+    for (let i = 0; i < 8; i++) {
+        resultado += (parseInt(cc2_grupo1[i]) * parseInt(cc2_grupo2[i])).toString();
+    }
+    
+    resultado = resultado.slice(0, 8);
+    const extrapolacion = `${cc1_grupo1}${resultado}`;
+    
+    let resultado_final = '';
+    for (let i = 0; i < 16; i++) {
+        resultado_final += cc1[i] === extrapolacion[i] ? cc1[i] : 'x';
+    }
+    
+    return resultado_final.slice(0, -1) + '1';
+}
+
+// Endpoints de extrapolación
+app.post('/api/extrapolacion/basica', (req, res) => {
+    try {
+        const { cc } = req.body;
+        if (!cc || cc.length < 16) {
+            return res.status(400).json({ success: false, error: 'Tarjeta inválida' });
+        }
+        const resultado = extrapolacionBasica(cc);
+        res.json({ success: true, resultado });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/extrapolacion/similitud', (req, res) => {
+    try {
+        const { cc1, cc2 } = req.body;
+        if (!cc1 || !cc2 || cc1.length < 16 || cc2.length < 16) {
+            return res.status(400).json({ success: false, error: 'Tarjetas inválidas' });
+        }
+        const resultado = extrapolacionSimilitud(cc1, cc2);
+        res.json({ success: true, resultado });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/extrapolacion/logica', (req, res) => {
+    try {
+        const { cc } = req.body;
+        if (!cc || cc.length < 16) {
+            return res.status(400).json({ success: false, error: 'Tarjeta inválida' });
+        }
+        const resultado = extrapolacionLogica(cc);
+        res.json({ success: true, resultado });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.post('/api/extrapolacion/sofia', (req, res) => {
+    try {
+        const { cc1, cc2 } = req.body;
+        if (!cc1 || !cc2 || cc1.length < 16 || cc2.length < 16) {
+            return res.status(400).json({ success: false, error: 'Tarjetas inválidas' });
+        }
+        const resultado = extrapolacionSofia(cc1, cc2);
+        res.json({ success: true, resultado });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.get('/', (req, res) => {
+    res.redirect('/chk.html');
+});
+
+app.get('/chk.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'chk.html'));
 });
 
 app.get('/gen', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'gen.html'));
+});
+
+app.get('/extrapolacion.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'extrapolacion.html'));
 });
 
 const PORT = process.env.PORT || 3000;
